@@ -575,9 +575,16 @@ static int oo_epoll1_callback(wait_queue_entry_t *wait, unsigned mode,
   oo_epoll1_set_shared_flag(priv, 1/*set*/);
   return 0;
 }
+#ifdef ORACLE_LINUX_KERNEL
+static void oo_epoll1_queue_proc(struct file *file,
+                                 wait_queue_head_t *whead,
+                                 poll_table *pt,
+                                 unsigned long fixed_event)
+#else
 static void oo_epoll1_queue_proc(struct file *file,
                                  wait_queue_head_t *whead,
                                  poll_table *pt)
+#endif
 {
   struct oo_epoll1_private* priv = container_of(pt,
                                                 struct oo_epoll1_private,
@@ -780,9 +787,16 @@ struct oo_epoll_poll_table {
   int rc;
 };
 
+#ifdef ORACLE_LINUX_KERNEL
+static void oo_epoll1_block_on_callback(struct file* filp,
+                                        wait_queue_head_t* w,
+                                        poll_table* pt,
+					unsigned long fixed_event)
+#else
 static void oo_epoll1_block_on_callback(struct file* filp,
                                         wait_queue_head_t* w,
                                         poll_table* pt)
+#endif
 {
   struct oo_epoll_poll_table* ept;
   int i = 0;

@@ -21,7 +21,6 @@ endif
 KDIR ?= /lib/modules/$(KVER)/build
 export KDIR KVER
 
-
 EXTRA_CPPFLAGS += -I$(TOPPATH)/src/include -I$(BUILDPATH)/include \
 		-I$(BUILDPATH) -I$(TOPPATH)/$(CURRENT) -D__ci_driver__
 ifdef NDEBUG
@@ -78,6 +77,13 @@ else
   else
     $(error Unable to build Onload with EFCT or AUX bus support)
   endif
+endif
+
+ifneq (,$(findstring uek,$(KVER)))
+# Oracle Linux Kernel is used
+EXTRA_CFLAGS += -DORACLE_LINUX_KERNEL
+else
+# Not an Oracle Linux Kernel
 endif
 
 HAVE_SFC ?= 1
